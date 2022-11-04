@@ -6,7 +6,6 @@ from cmath import sin, exp, sqrt
 import time
 
 
-
 def func_Rosenbrock(C):
     sum = 0
     for i in range(1):
@@ -67,7 +66,7 @@ class SOS:
             Xi = self.pop[i]
 
             # mutualism
-            j = random.randint(0,self.size-1) # i != j
+            j = random.randint(0,self.size-1) 
             Xj = self.pop[j]
             
             mut_vector = (Xi.Data + Xj.Data)/2
@@ -82,7 +81,7 @@ class SOS:
             if newFit_j < self.pop[j].fit: self.pop[j] = Individual(np.array(new_xj), self.func)
 
             # Commensalism
-            j = random.randint(0,self.size-1) # i != j
+            j = random.randint(0,self.size-1) 
             Xj = self.pop[j]
 
             new_xi = Xi.Data + random.uniform(-1, 1) * (X_best.Data - Xj.Data)
@@ -90,7 +89,7 @@ class SOS:
             if (self.func(new_xi) < self.pop[i].fit): self.pop[i] = Individual(np.array(new_xi), self.func)
 
             # Parasitism
-            j = random.randint(0,self.size-1) # i != j
+            j = random.randint(0,self.size-1) 
             Xj = self.pop[j]
 
             parasite_vector = [random.uniform(self.ab[j][0], self.ab[j][1]) for j in range(self.vars)]

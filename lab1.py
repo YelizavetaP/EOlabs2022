@@ -174,7 +174,7 @@ class GA:
         # відбір із витісненням (ВВ)
         # self.sortPop()
         # newPop = []
-        # dif = 0.001
+        # dif = 0.01
         # temp = 0
         # for n in range(len(self.pop)):
         #     for m in range(len(self.pop)):
@@ -189,7 +189,7 @@ class GA:
 
         # елітний відбір (ЕВ)
         # self.sortPop()
-        # self.pop = self.pop[:20]
+        # self.pop = self.pop[:self.size]
 
 
     def inbriding(self):
