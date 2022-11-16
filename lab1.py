@@ -70,16 +70,16 @@ class GA:
         # одноточковий
         #вибір першої точки від 1 до кінця рядка
         k = np.random.randint(1,self.k)
-        for j in range(self.vars): #для кожної змінної
-            for i in range(k,self.k): #від k до кнця рядка
-                p1[j][i], p2[j][i] = p2[j][i],p1[j][i] #змінюмо частини
+        for j in range(self.vars): 
+            for i in range(k,self.k): 
+                p1[j][i], p2[j][i] = p2[j][i],p1[j][i] 
 
         # двоточковий
         #вибір другої точки від першої до кінця рядка
         k2 = np.random.randint(k,self.k)
-        for j in range(self.vars): #для кожної змінної
-            for i in range(k2,self.k): #від k2 до кнця рядка
-                p1[j][i], p2[j][i] = p2[j][i],p1[j][i] #змінюмо частини
+        for j in range(self.vars): 
+            for i in range(k2,self.k): 
+                p1[j][i], p2[j][i] = p2[j][i],p1[j][i]
 
             
         child = p1 if np.random.random()<0.5 else p2
