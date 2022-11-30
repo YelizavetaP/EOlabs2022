@@ -1,7 +1,8 @@
 # метод деформованих зірок
 import random
 import time as t
-from cmath import exp, sin, sqrt, cos
+from math import exp, sin, sqrt, cos, radians
+import copy
 
 import numpy as np
 
@@ -9,11 +10,11 @@ import numpy as np
 def func_Rosenbrock(C):
     sum = 0
     
-    for i in range(len(C)-1):        
-        sum+= 100*((C[i+1]-(C[i])**2)**2) + (C[i]-1)**2
-        # sum += C[i]**2
+    for i in range(len(C)):        
+        # sum+= 100*((C[i+1]-(C[i])**2)**2) + (C[i]-1)**2
+        sum += C[i]**2
     
-    return round(sum)
+    return round(sum, 6)
 
 def func_Beale(C):
     x =  C[0]
@@ -24,14 +25,6 @@ def func_CrossInTray(C):
     x, y = C
     rez = -0.0001*(np.abs( sin(x) * sin(y) * exp(abs( 100 - ((sqrt(x**2 + y**2)) / np.pi ) ) ) )+1)**0.1
     return rez
-
-
-# class Individual:
-    
-#     def __init__(self, data ,func):
-#         self.Data = data
-#         self.f = func
-#         self.fit = self.f(data)
 
 
 class MODS:
@@ -50,8 +43,6 @@ class MODS:
         for i in range(self.size):
 
             D = [random.uniform(self.ab[j][0], self.ab[j][1]) for j in range(self.vars)]
-            if self.vars > 2:
-                 D = [random.uniform(self.ab[j][0], self.ab[j][1]) for j in range(self.vars)]
 
             self.pop.append([D, self.func(D)])  #[[1, 4, .. 5], 0]
         
@@ -183,7 +174,7 @@ class MODS:
                 xj = Pt[j]
                 xk = Pt[k]
 
-                dots = sorted([xi, xj, xk], key=lambda ind: ind[-1]) #знаходимо кразу точку
+                dots = sorted([xi, xj, xk], key=lambda ind: ind[-1]) #знаходимо кращу точку
                 
                 x0 = [(dots[0][0][0]+dots[1][0][0]+dots[2][0][0])/3, (dots[0][0][1]+dots[1][0][1]+dots[2][0][1])/3] #центр трикутника(центр мас)
                 
@@ -266,7 +257,7 @@ class MODS:
                 for ind in self.pop: f_sum_1 += ind[-1]
                 f_sum_1/=self.size
 
-                Pt = self.pop
+                Pt = copy.deepcopy(self.pop)
                 Pz, Pq, Pu = [], [], []
 
                 # Pz
@@ -275,10 +266,10 @@ class MODS:
                     i_, j, k = random.randint(0,self.size-1), random.randint(0,self.size-1), random.randint(0,self.size-1)
 
 
-                    dots = sorted([Pt[i_], Pt[j], Pt[k]], key=lambda ind: ind[-1]) #знаходимо кращу точку
-                    best = dots[0][0]
-                    xj = dots[1][0]
-                    xk = dots[2][0]
+                    dots = sorted([copy.deepcopy(Pt[i_]), copy.deepcopy(Pt[j]), copy.deepcopy(Pt[k])], key=lambda ind: ind[-1]) #знаходимо кращу точку
+                    best = copy.deepcopy(dots[0][0])
+                    xj = copy.deepcopy(dots[1][0])
+                    xk = copy.deepcopy(dots[2][0])
                     # print(dots)
 
                     # центроїд
@@ -300,13 +291,13 @@ class MODS:
                     Pz.append([yk, self.func(yk)])
 
                     # поворот
-                    al = random.randint(0,180) # кут повороту
+                    al = random.randint(0,360) # кут повороту
                     x_k, x_l = random.sample((0,self.vars-1), 2) #координати що будуть змінені для кожної точки
 
                     for dot in [best, xj, xk]:
                         
-                        xk_val = best[x_k]*cos(al).real - best[x_l]*sin(al).real
-                        xl_val = best[x_k]*sin(al).real + best[x_l]*cos(al).real
+                        xk_val = best[x_k]*cos(radians(al))- best[x_l]*sin(radians(al))
+                        xl_val = best[x_k]*sin(radians(al)) + best[x_l]*cos(radians(al))
 
                         dot[x_k], dot[x_l] = xk_val, xl_val
    
@@ -332,12 +323,12 @@ class MODS:
                 # if sum <= VCH: break
 
                 # VF 
-                f_sum_2 = 0
-                for ind in self.pop: f_sum_2 += ind[-1]
-                f_sum_2/=self.size
-                diff = abs(f_sum_1-f_sum_2)
-                # print(diff)
-                if diff <= VF: break
+                # f_sum_2 = 0
+                # for ind in self.pop: f_sum_2 += ind[-1]
+                # f_sum_2/=self.size
+                # diff = abs(f_sum_1-f_sum_2)
+                # # print(diff)
+                # if diff <= VF: break
 
                 its+=1
 
@@ -351,26 +342,24 @@ class MODS:
 
 if __name__ == "__main__":
 
-    print(sin(90))
   
 
     alg_n1 = MODS(func_Beale, 1, 10, [[-4.5,4.5]] )
+    #                    sigma
     res = alg_n1.iter((4.5 + 4.5)/5)
-
     print('Одновимірна ф-ія: ', res)
 
 
     alg_n2 = MODS(func_CrossInTray, 2, 30, [[-10,10],[-10,10]])
     #                    a
     res = alg_n2.iter_n2(2)
-
     print('Двовимірна ф-ія: ', res)
-    n = 3
+
+    n = 10
     ab = [[-10, 10]] * n
-    alg_n2 = MODS(func_Rosenbrock, n, 20, ab)
+    alg_n2 = MODS(func_Rosenbrock, n, 50, ab)
     #                    k
     res = alg_n2.iter_n(5)
-
     print('n-вимірна ф-ія: ', res)
 
     

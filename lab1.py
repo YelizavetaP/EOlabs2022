@@ -151,7 +151,7 @@ class GA:
         p = np.array([self.pop[i].fit for i in range(0,self.size-1)])
         m = np.mean(p)
         i = 0
-        for l in range(0,self.size):
+        for l in range(0,self.size-1):
             while i<self.size:
                 if p[i]>=m:	break
                 i+=1
